@@ -1,10 +1,11 @@
 from exif import Image
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 import sys
+import os
 import json
 
 def openfile():
@@ -43,7 +44,8 @@ class Ui_MainWindow(object):
         self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit.setGeometry(QtCore.QRect(60, 140, 301, 281))
         self.textEdit.setObjectName("textEdit")
-        self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
+        # self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
         self.textEdit_2.setGeometry(QtCore.QRect(170, 50, 441, 31))
         self.textEdit_2.setObjectName("textEdit_2")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -65,7 +67,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
     def set_img_icon(self):
-        if self.img != '':
+        if self.img != '' and os.path.isfile(self.img):
             pixmap = QPixmap(self.img)
         else:
             pixmap = QPixmap(self.default_img).scaled(100, 100, QtCore.Qt.KeepAspectRatio)
@@ -73,7 +75,9 @@ class Ui_MainWindow(object):
         self.label_2.resize(pixmap.width(), pixmap.height())
 
     def open_btn(self):
-        self.img = r"{}".format(openfile())
+        path = r"{}".format(openfile())
+        if path != '':
+            self.img = path
         self.get_img()
 
     def enter_path(self):
@@ -82,7 +86,10 @@ class Ui_MainWindow(object):
 
     def get_img(self):
         self.textEdit_2.setText(self.img)
-        data = get_exif(self.img)
+        if os.path.isfile(self.img):
+            data = get_exif(self.img)
+        else:
+            data = ''
         self.textEdit.setText(data)
         self.set_img_icon()
 
@@ -91,7 +98,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle("EXIF Data Viewer")
         self.label.setText(_translate("MainWindow", "Summary"))
         self.textEdit.setReadOnly(True)
-        # self.textEdit_2.returnPressed.connect(self.enter_path)
+        self.textEdit_2.returnPressed.connect(self.enter_path)
         self.pushButton.setText(_translate("MainWindow", "Open..."))
         self.pushButton.clicked.connect(lambda: self.open_btn())
         self.set_img_icon()
