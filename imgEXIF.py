@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from exif import Image
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import *
@@ -69,6 +70,8 @@ class Ui_MainWindow(object):
     def set_img_icon(self):
         if self.img != '' and os.path.isfile(self.img):
             pixmap = QPixmap(self.img)
+            if pixmap.width() > 250 or pixmap.height() > 250:
+                pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio)
         else:
             pixmap = QPixmap(self.default_img).scaled(100, 100, QtCore.Qt.KeepAspectRatio)
         self.label_2.setPixmap(pixmap)
