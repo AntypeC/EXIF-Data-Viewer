@@ -32,6 +32,7 @@ def get_exif(img):
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.img = ''
+        self.default_img = r'C:\Users\Antype Cryptous\Desktop\dev\imgGPS\f2a80ee8087d750080763918df53d2be.gif'
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(677, 507)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -45,15 +46,11 @@ class Ui_MainWindow(object):
         self.textEdit_2 = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit_2.setGeometry(QtCore.QRect(170, 50, 441, 31))
         self.textEdit_2.setObjectName("textEdit_2")
-        self.verticalScrollBar = QtWidgets.QScrollBar(self.centralwidget)
-        self.verticalScrollBar.setGeometry(QtCore.QRect(360, 140, 21, 281))
-        self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
-        self.verticalScrollBar.setObjectName("verticalScrollBar")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(190, 110, 47, 13))
+        self.label.setGeometry(QtCore.QRect(185, 110, 47, 13))
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(480, 260, 47, 13))
+        self.label_2.setGeometry(QtCore.QRect(390, 140, 47, 13))
         self.label_2.setObjectName("label_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -66,23 +63,31 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    
+    def set_img_icon(self):
+        if self.img != '':
+            pixmap = QPixmap(self.img)
+        else:
+            pixmap = QPixmap(self.default_img).scaled(100, 100, QtCore.Qt.KeepAspectRatio)
+        self.label_2.setPixmap(pixmap)
+        self.label_2.resize(pixmap.width(), pixmap.height())
 
     def get_img(self):
         self.img = r"{}".format(openfile())
         self.textEdit_2.setText(self.img)
         data = get_exif(self.img)
         self.textEdit.setText(data)
+        self.set_img_icon()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle("EXIF Data Viewer")
         self.label.setText(_translate("MainWindow", "Summary"))
         # self.label_2.setText(_translate("MainWindow", "img"))
-        pixmap = QPixmap(self.img)
-        self.label_2.setPixmap(pixmap.scaled(200, 200))
         # MainWindow.setCentralWidget(self.label_2)
         self.pushButton.setText(_translate("MainWindow", "Open..."))
         self.pushButton.clicked.connect(lambda: self.get_img())
+        self.set_img_icon()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
