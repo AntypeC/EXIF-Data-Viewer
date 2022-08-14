@@ -72,8 +72,15 @@ class Ui_MainWindow(object):
         self.label_2.setPixmap(pixmap)
         self.label_2.resize(pixmap.width(), pixmap.height())
 
-    def get_img(self):
+    def open_btn(self):
         self.img = r"{}".format(openfile())
+        self.get_img()
+
+    def enter_path(self):
+        self.img = self.textEdit_2.text()
+        self.get_img()
+
+    def get_img(self):
         self.textEdit_2.setText(self.img)
         data = get_exif(self.img)
         self.textEdit.setText(data)
@@ -83,10 +90,10 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle("EXIF Data Viewer")
         self.label.setText(_translate("MainWindow", "Summary"))
-        # self.label_2.setText(_translate("MainWindow", "img"))
-        # MainWindow.setCentralWidget(self.label_2)
+        self.textEdit.setReadOnly(True)
+        # self.textEdit_2.returnPressed.connect(self.enter_path)
         self.pushButton.setText(_translate("MainWindow", "Open..."))
-        self.pushButton.clicked.connect(lambda: self.get_img())
+        self.pushButton.clicked.connect(lambda: self.open_btn())
         self.set_img_icon()
 
 if __name__ == "__main__":
